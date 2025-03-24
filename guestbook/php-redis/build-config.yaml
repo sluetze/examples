@@ -1,0 +1,29 @@
+kind: ImageStream
+apiVersion: image.openshift.io/v1
+metadata:
+  name: "php-redis"
+spec:
+  lookupPolicy:
+    local: true
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: php-redis
+spec:
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/kubernetes/examples.git'
+    contextDir: /guestbook/php-redis
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'php:8.2-ubi9'
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'php-redis:latest'
